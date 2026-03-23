@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormData } from "@/types/form-types";
 import { useNetworks } from "@/context/networks-context";
-import { getLogoSrc } from "@/lib/utils";
 
 import {
   FormField,
@@ -10,13 +9,7 @@ import {
   FormLabel,
   FormControl,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { NetworkSearchSelect } from "@/components/ui/network-search-select";
 import { Input } from "@/components/ui/input";
 import PixelAvatar from "@/components/pixel-avatar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@radix-ui/react-tooltip";
@@ -42,52 +35,22 @@ export default function ApiInputFields({ form }: ApiInputFieldsProps) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Network</FormLabel>
-            <Select
-              onValueChange={(value) => {
-                field.onChange(value);
-                const selectedNetwork = networks.find(
-                  (network) => network.value === value
-                );
-                if (selectedNetwork) {
-                  form.setValue("chainId", selectedNetwork.chainId);
-                }
-              }}
-              value={field.value}
-              disabled={isLoading}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a network">
-                    {field.value && (
-                      <div className="flex items-center">
-                        <img
-                          src={getLogoSrc(
-                            networks.find((network) => network.value === field.value)?.logo || ""
-                          )}
-                          alt={`${field.value} logo`}
-                          className="w-5 h-5 mr-2"
-                        />
-                        {networks.find((network) => network.value === field.value)?.label}
-                      </div>
-                    )}
-                  </SelectValue>
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {networks.map((network) => (
-                  <SelectItem key={network.value} value={network.value}>
-                    <div className="flex items-center">
-                      <img
-                        src={getLogoSrc(network.logo)}
-                        alt={`${network.label} logo`}
-                        className="w-5 h-5 mr-2"
-                      />
-                      {network.label} (Chain ID: {network.chainId})
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <FormControl>
+              <NetworkSearchSelect
+                value={field.value}
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  const selectedNetwork = networks.find(
+                    (network) => network.value === value
+                  );
+                  if (selectedNetwork) {
+                    form.setValue("chainId", selectedNetwork.chainId);
+                  }
+                }}
+                networks={networks}
+                disabled={isLoading}
+              />
+            </FormControl>
             <p className="text-xs text-muted-foreground mt-1">
               The network on which the Safe is deployed
             </p>
