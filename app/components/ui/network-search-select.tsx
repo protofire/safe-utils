@@ -191,7 +191,6 @@ export function NetworkSearchSelect({
         <div
           className={cn(
             "absolute z-50 mt-1 w-full rounded-md border border-input bg-popover text-popover-foreground shadow-md",
-            "dark:bg-white dark:text-gray-900",
             "animate-in fade-in-0 zoom-in-95 duration-100"
           )}
         >
