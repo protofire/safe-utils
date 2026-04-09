@@ -174,9 +174,7 @@ export function NetworkSearchSelect({
             <span className="truncate">{selectedNetwork.label}</span>
           </div>
         ) : (
-          <span className="text-muted-foreground dark:text-gray-400">
-            {placeholder}
-          </span>
+          <span className="text-muted-foreground">{placeholder}</span>
         )}
         <ChevronDown
           aria-hidden="true"
@@ -191,6 +189,7 @@ export function NetworkSearchSelect({
         <div
           className={cn(
             "absolute z-50 mt-1 w-full rounded-md border border-input bg-popover text-popover-foreground shadow-md",
+            "dark:bg-white dark:text-gray-900",
             "animate-in fade-in-0 zoom-in-95 duration-100"
           )}
         >
@@ -211,11 +210,7 @@ export function NetworkSearchSelect({
               }
               autoComplete="off"
               spellCheck={false}
-              className={cn(
-                "flex-1 bg-transparent text-sm outline-none",
-                "placeholder:text-muted-foreground dark:placeholder:text-gray-400",
-                "dark:text-gray-900"
-              )}
+              className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground dark:text-gray-900 dark:placeholder:text-gray-400"
               placeholder="Search by name or Chain ID…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -283,7 +278,7 @@ export function NetworkSearchSelect({
                   <span className="flex-1 min-w-0 truncate">
                     {network.label}
                   </span>
-                  <span className="ml-2 text-xs text-muted-foreground dark:text-gray-500 flex-shrink-0 tabular-nums">
+                  <span className="ml-2 text-xs text-muted-foreground flex-shrink-0 tabular-nums">
                     {network.chainId}
                   </span>
                   {network.value === value && (
