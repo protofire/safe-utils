@@ -5,6 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function getLogoSrc(logo: string): string {
+  if (logo.startsWith("https://")) return logo;
+  return `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/${logo}`;
+}
+
 
 export const API_URLS: { [key: string]: string } = {
   arbitrum: "https://safe-transaction-arbitrum.safe.global",

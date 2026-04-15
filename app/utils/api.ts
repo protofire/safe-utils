@@ -1,19 +1,17 @@
-import { NETWORKS } from "@/app/constants";
 import { API_URLS } from "@/lib/utils";
 import { TransactionParams } from "@/types/form-types";
 
 export async function fetchTransactionDataFromApi(
   network: string,
   address: string,
-  nonce: string
+  nonce: string,
+  transactionService?: string
 ): Promise<TransactionParams> {
-  const selectedNetwork = NETWORKS.find((n) => n.value === network);
+  const apiUrl =
+    transactionService ||
+    API_URLS[network] ||
+    `https://safe-transaction-${network === "ethereum" ? "mainnet" : network}.safe.global`;
 
-  if (!selectedNetwork) {
-    throw new Error(`Network ${network} not found`);
-  }
-
-  const apiUrl = API_URLS[network] || `https://safe-transaction-${network === 'ethereum' ? 'mainnet' : network}.safe.global`;
   const endpoint = `${apiUrl}/api/v1/safes/${address}/multisig-transactions/?nonce=${nonce}`;
   
   try {
@@ -52,9 +50,14 @@ export async function fetchTransactionDataFromApi(
   }
 }
 
-export function getShareUrl(network: string, address: string, nonce: string): string {
+export function getShareUrl(
+  network: string,
+  address: string,
+  nonce: string,
+  gnosisPrefix?: string
+): string {
   const baseLink = process.env.NEXT_PUBLIC_BASE_URL;
-  const networkPrefix = NETWORKS.find((n) => n.value === network)?.gnosisPrefix;
+  const networkPrefix = gnosisPrefix || network;
   const safeAddress = `${networkPrefix}:${encodeURIComponent(address)}`;
   const url = `${baseLink}?safeAddress=${safeAddress}&nonce=${encodeURIComponent(nonce)}`;
   return url;

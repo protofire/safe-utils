@@ -1,20 +1,15 @@
 import React, { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormData } from "@/types/form-types";
-import { NETWORKS } from "@/app/constants";
+import { useNetworks } from "@/context/networks-context";
+
 import {
   FormField,
   FormItem,
   FormLabel,
   FormControl,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { NetworkSearchSelect } from "@/components/ui/network-search-select";
 import { Input } from "@/components/ui/input";
 import PixelAvatar from "@/components/pixel-avatar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@radix-ui/react-tooltip";
@@ -26,6 +21,7 @@ interface ApiInputFieldsProps {
 
 export default function ApiInputFields({ form }: ApiInputFieldsProps) {
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
+  const { networks, isLoading } = useNetworks();
 
   const handleTooltipToggle = (id: string) => {
     setActiveTooltip(activeTooltip === id ? null : id);
@@ -39,51 +35,22 @@ export default function ApiInputFields({ form }: ApiInputFieldsProps) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Network</FormLabel>
-            <Select
-              onValueChange={(value) => {
-                field.onChange(value);
-                const selectedNetwork = NETWORKS.find(
-                  (network) => network.value === value
-                );
-                if (selectedNetwork) {
-                  form.setValue("chainId", selectedNetwork.chainId);
-                }
-              }}
-              value={field.value}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a network">
-                    {field.value && (
-                      <div className="flex items-center">
-                        <img
-                          src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/${
-                            NETWORKS.find((network) => network.value === field.value)?.logo
-                          }`}
-                          alt={`${field.value} logo`}
-                          className="w-5 h-5 mr-2"
-                        />
-                        {NETWORKS.find((network) => network.value === field.value)?.label}
-                      </div>
-                    )}
-                  </SelectValue>
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {NETWORKS.map((network) => (
-                  <SelectItem key={network.value} value={network.value}>
-                    <div className="flex items-center">
-                      <img
-                        src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/${network.logo}`}
-                        alt={`${network.label} logo`}
-                        className="w-5 h-5 mr-2"
-                      />
-                      {network.label} (Chain ID: {network.chainId})
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <FormControl>
+              <NetworkSearchSelect
+                value={field.value}
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  const selectedNetwork = networks.find(
+                    (network) => network.value === value
+                  );
+                  if (selectedNetwork) {
+                    form.setValue("chainId", selectedNetwork.chainId);
+                  }
+                }}
+                networks={networks}
+                disabled={isLoading}
+              />
+            </FormControl>
             <p className="text-xs text-muted-foreground mt-1">
               The network on which the Safe is deployed
             </p>
@@ -106,7 +73,7 @@ export default function ApiInputFields({ form }: ApiInputFieldsProps) {
                 onChange={(e) => {
                   const value = parseInt(e.target.value);
                   field.onChange(value);
-                  const selectedNetwork = NETWORKS.find(
+                  const selectedNetwork = networks.find(
                     (network) => network.chainId === value
                   );
                   if (selectedNetwork) {

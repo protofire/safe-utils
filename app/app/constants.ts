@@ -1,4 +1,14 @@
-export const NETWORKS = [
+export type Network = {
+  value: string;
+  label: string;
+  chainId: number;
+  gnosisPrefix: string;
+  logo: string;
+  testnet?: boolean;
+  transactionService?: string;
+};
+
+export const NETWORKS: Network[] = [
     // {
     //   value: "ethereum",
     //   label: "Ethereum",

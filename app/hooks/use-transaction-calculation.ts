@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { NETWORKS } from "@/app/constants";
+import { useNetworks } from "@/context/networks-context";
 import { calculateHashes } from "@/components/safeHashesComponent";
 import { fetchTransactionDataFromApi } from "@/utils/api";
 import { FormData, CalculationResult, TransactionParams } from "@/types/form-types";
@@ -16,17 +16,18 @@ export function useTransactionCalculation(searchParams: ReadonlyURLSearchParams)
   const [calculationRequested, setCalculationRequested] = useState(false);
 
   const { toast } = useToast();
+  const { networks } = useNetworks();
 
   // Extract parameters from URL
   const [safeAddress] = useState(searchParams.get("safeAddress") || "");
-  const [network] = useState(() => {
+  const network = useMemo(() => {
     const prefix = safeAddress.split(":")[0];
-    return NETWORKS.find((n) => n.gnosisPrefix === prefix)?.value || "";
-  });
-  const [chainId] = useState(() => {
+    return networks.find((n) => n.gnosisPrefix === prefix)?.value || "";
+  }, [safeAddress, networks]);
+  const chainId = useMemo(() => {
     const prefix = safeAddress.split(":")[0];
-    return NETWORKS.find((n) => n.gnosisPrefix === prefix)?.chainId || "";
-  });
+    return networks.find((n) => n.gnosisPrefix === prefix)?.chainId || "";
+  }, [safeAddress, networks]);
   const [address] = useState(() => {
     const _address = safeAddress.match(/0x[a-fA-F0-9]{40}/)?.[0];
     if (_address) {
@@ -128,10 +129,12 @@ export function useTransactionCalculation(searchParams: ReadonlyURLSearchParams)
       
       if (data.method === "api") {
         try {
+          const selectedNetwork = networks.find((n) => n.value === data.network);
           txParams = await fetchTransactionDataFromApi(
             data.network,
             data.address,
-            data.nonce
+            data.nonce,
+            selectedNetwork?.transactionService
           );
         } catch (error: any) {
           setCalculationRequested(false);
@@ -183,7 +186,7 @@ export function useTransactionCalculation(searchParams: ReadonlyURLSearchParams)
   
       setResult({
         network: {
-          name: NETWORKS.find(n => n.value === data.network)?.label || data.network,
+          name: networks.find(n => n.value === data.network)?.label || data.network,
           chain_id: data.chainId.toString(),
         },
         transaction: {
