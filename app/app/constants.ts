@@ -321,16 +321,14 @@ export const NETWORKS: Network[] = [
       label: "Berachain",
       chainId: 80094,
       gnosisPrefix: "berachain",
-      logo: "networks/berachain.ico",
-      transactionService: "https://transaction.safe.berachain.com"
+      logo: "networks/berachain.ico"
     },
     {
       value: "berachain-bepolia",
-      label: "Berachain",
+      label: "Bepolia",
       chainId: 80069,
       gnosisPrefix: "berachain-bepolia",
       logo: "networks/berachain.ico",
-      transactionService: "https://transaction-bepolia.safe.berachain.com",
       testnet: true
     },
   ];
