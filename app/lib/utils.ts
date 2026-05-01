@@ -53,6 +53,8 @@ export const API_URLS: { [key: string]: string } = {
   "dogeos-chykyu":"https://transaction-dogeos-testnet.safe.protofire.io",
   "hoodi-testnet":"https://transaction-ethereum-hoodi.safe.protofire.io",
   "tempo-testnet":"https://transaction-tempo-testnet.safe.protofire.io",
+  "berachain":"https://transaction.safe.berachain.com",
+  "berachain-bepolia":"https://transaction-bepolia.safe.berachain.com"
 }
 
 export function isValidNetwork(network: string): boolean {
