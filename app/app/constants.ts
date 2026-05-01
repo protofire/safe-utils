@@ -316,4 +316,21 @@ export const NETWORKS: Network[] = [
       logo: "networks/tempo.ico",
       testnet: true,
     },
+    {
+      value: "berachain",
+      label: "Berachain",
+      chainId: 80094,
+      gnosisPrefix: "berachain",
+      logo: "networks/berachain.ico",
+      transactionService: "https://transaction.safe.berachain.com"
+    },
+    {
+      value: "berachain-bepolia",
+      label: "Berachain",
+      chainId: 80069,
+      gnosisPrefix: "berachain-bepolia",
+      logo: "networks/berachain.ico",
+      transactionService: "https://transaction-bepolia.safe.berachain.com",
+      testnet: true
+    },
   ];
